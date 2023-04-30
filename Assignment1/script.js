@@ -11,6 +11,10 @@ let vertices = [
     0.7, 0.6, 0
     ];
 
+
+// Code Below referred from
+// https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#
+
 // Buffer
 const vertexBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -21,7 +25,7 @@ gl.bindBuffer(gl.ARRAY_BUFFER, null);
 const vertexShader = gl.createShader(gl.VERTEX_SHADER);
 const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
-// https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#
+
 const vertexSource =
     'attribute vec3 coordinates;' +
     'void main(void) {' +
@@ -48,7 +52,7 @@ gl.attachShader(shaderProgram,fragmentShader);
 gl.linkProgram(shaderProgram);
 gl.useProgram(shaderProgram);
 
-console.log(gl)
+// console.log(gl)
 
 gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 const coord = gl.getAttribLocation(shaderProgram, "coordinates");
