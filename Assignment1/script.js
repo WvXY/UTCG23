@@ -2,16 +2,24 @@ const canvas = document.getElementById("glCanvas");
 // GL コンテキストを初期化する
 const gl = canvas.getContext("webgl");
 
-let vertices = [
-    -0.7, -0.1, 0,
-    -0.3, 0.6, 0,
-    -0.3, -0.3, 0,
-    0.2, 0.6, 0,
-    0.3, -0.3, 0,
-    0.7, 0.6, 0
-    ];
+// let vertices = [
+//     -0.7, -1.1, 0,
+//     -0.3, 0.6, 0,
+//     -0.3, -0.3, 0,
+//     0.2, 0.6, 0,
+//     0.3, -0.3, 0,
+//     0.7, 0.6, 0
+//     ];
+
+function nurbs() {
+
+    return versics;
+}
+
+let vertics = nurbs();
 
 
+//-----------------------------div---------------------------------------
 // Code Below referred from
 // https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#
 
@@ -39,7 +47,7 @@ gl.compileShader(vertexShader);
 
 const fragmentSource =
     'void main(void) {' +
-    'gl_FragColor = vec4(0.0, 0.0, 1.0, 1);' +
+    'gl_FragColor = vec4(1.0, 0.0, 0.0, 1);' +
     '}';
 
 gl.shaderSource(fragmentShader, fragmentSource);
@@ -64,5 +72,5 @@ gl.enableVertexAttribArray(coord);
 //gl.enable(gl.DEPTH_TEST);
 //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 // gl.viewport(0,0,canvas.width, canvas.height);
-gl.drawArrays(gl.LINE_LOOP, 0, 6);
+gl.drawArrays(gl.LINE_STRIP, 0, 6);
 
