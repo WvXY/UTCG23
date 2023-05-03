@@ -1,21 +1,133 @@
-//
-// ここから開始
-//
-function main() {
-    const canvas = document.querySelector("#glCanvas");
-    // GL コンテキストを初期化する
-    const gl = canvas.getContext("webgl");
+// var nj = require('numjs');
 
-    // WebGL が使用可能で動作している場合にのみ続行します
-    if (gl === null) {
-        alert("WebGL を初期化できません。ブラウザーまたはマシンが対応していない可能性があります。");
-        return;
+function basis_function(u, i, p, U) {
+    if (p === 0) {
+        if (U[i] <= u && u < U[i + 1]) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else {
+        return basis_function(u, i, p - 1, U) * (u - U[i]) / (U[i + p] - U[i]) +
+            basis_function(u, i + 1, p - 1, U) * (U[i + p + 1] - u) / (U[i + p + 1] - U[i + p]);
     }
-
-    // クリアカラーを黒に設定し、完全に不透明にします
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    // 指定されたクリアカラーでカラーバッファーをクリアします
-    gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
-window.onload = main;
+function R(u, i, p, n, w, U) {
+    let sum = 0;
+    for (let j = 0; j <= n; j++) {
+        sum += w[j] * basis_function(u, j, p, U);
+    }
+    return basis_function(u, i, p, U) * w[i] / sum;
+}
+
+
+function nurbs(u, p, n, w, U, controlPoints) {
+    let vertices = [0, 0];
+    for (let i = 0; i <= n; i++) {
+        vertices[0] += R(u, i, p, n, w, U) * controlPoints[i][0];
+        vertices[1] += R(u, i, p, n, w, U) * controlPoints[i][1];
+    }
+    return vertices;
+}
+
+function draw_line(p, n, w, U, lines, controlPoints) {
+    //var lines = 1000;
+    let vertices = [];
+    for (let i = 0; i <= lines; i++) {
+        let point = nurbs((i+1) / lines, p, n, w, U, controlPoints);
+        // point[0] = point[0] || 0;
+        // point[1] = point[1] || 0;
+        vertices.push(point[0]/2 || 0, point[1]/2 || 0, 0);
+    }
+    return vertices;
+}
+
+
+// -------Debug-------------------------------
+let P = [[0.0, 0.0], [1, 2], [3, 1]];
+let U = [0.0, 0.2, 0.4, 0.6, 0.8, 0.9, 1.0];
+let w = [1, 1, 1, 1, 1];
+let n = 2;
+let p = 3;
+let m = n + p + 1;
+
+const vertices = draw_line(p, n, w, U, 100, P);
+// console.log(vertices);
+
+// output vertices
+// document.getElementById("output").innerHTML = vertices;
+
+/*-----------------------------div---------------------------------------
+Code Below referred from (Edited)
+https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#
+*/
+
+
+// init
+const canvas = document.getElementById("glCanvas");
+const gl = canvas.getContext("webgl2");
+
+// let vertices = [
+//     -0.7, -1.1, 0,
+//     -0.3, 0.6, 0,
+//     -0.3, -0.3, 0,
+//     0.2, 0.6, 0,
+//     0.3, -0.3, 0,
+//     0.7, 0.6, 0
+// ];
+
+// Buffer
+const vertexBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+console.log(gl.ARRAY_BUFFER)
+
+// Shader
+const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+
+
+const vertexSource =
+    'attribute vec3 coordinates;' +
+    'void main(void) {' +
+    'gl_Position = vec4(coordinates, 1.0);' +
+    '}';
+
+
+gl.shaderSource(vertexShader, vertexSource);
+gl.compileShader(vertexShader);
+
+
+const fragmentSource =
+    'void main(void) {' +
+    'gl_FragColor = vec4(1.0, 0.0, 0.0, 1);' +
+    '}';
+
+gl.shaderSource(fragmentShader, fragmentSource);
+gl.compileShader(fragmentShader);
+
+// Shader Program
+const shaderProgram = gl.createProgram();
+gl.attachShader(shaderProgram, vertexShader);
+gl.attachShader(shaderProgram, fragmentShader);
+gl.linkProgram(shaderProgram);
+gl.useProgram(shaderProgram);
+
+// console.log(gl)
+
+gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+const coord = gl.getAttribLocation(shaderProgram, "coordinates");
+gl.vertexAttribPointer(coord, 3, gl.FLOAT, true, 0, 0); // what?
+gl.enableVertexAttribArray(coord);
+
+// Draw
+// gl.clearColor(0,1, 1, 1);
+// gl.enable(gl.DEPTH_TEST);
+// gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+gl.viewport(-100,-100,canvas.width, canvas.height);
+gl.drawArrays(gl.LINE_STRIP, 0, 99);
+// gl.drawArrays()
+
