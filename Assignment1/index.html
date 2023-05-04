@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="text-align:center; font-family:'Arial'">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -7,13 +7,24 @@
 </head>
 <body>
     <h1>UTokyo Computer Graphics 2023</h1>
-    <h2>Assignment 1</h2>
-    <p>In this assignment, I used webgl to draw spline.
-        Because I used Rhinoceros, which is a 3D modeling software using Nurbs,
-        a lot when I was doing architecture design,
-        I decided to draw NURBS(Non-Uniform Rational B-Spline) in 2D space.</p>
-    <p id="output"></p>
-    <canvas id="glCanvas" width="600" height="600"></canvas>
+    <h2>Assignment 1: Spline</h2>
+    <h4>Description</h4>
+    <p>In this assignment, I decided to draw a circle using NURBS(Non-Uniform Rational B-Spline). <br>
+        When I was doing architecture design, I often used a 3D modeling software called Rhinoceros,
+        which uses NURBS to make precise 3D models.
+    </p>
+    <p id="output">The problem is, it doesn't a GUI, so it can't be changed in this page.
+    In order to draw something different, (e.g, add more control points, change weights, etc.)
+    you have to edit the source code, which is to some extent, not user-friendly. </p>
+
+    <h4>TO-DO(maybe in the next assignment)</h4>
+    <ul>
+        <li>Allow edit </li>
+        <li>Draw multiple objects in webGL</li>
+    </ul>
+    <canvas id="glCanvas" width="400" height="400"></canvas>
     <script src="script.js"></script>
+    <h4>Reference:</h4>
+    <p>https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#</p>
 </body>
 </html>

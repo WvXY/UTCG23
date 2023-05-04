@@ -8,8 +8,10 @@ function basis_function(u, i, p, U) {
             return 0;
         }
     } else {
-        return basis_function(u, i, p - 1, U) * (u - U[i]) / (U[i + p] - U[i]) +
-            basis_function(u, i + 1, p - 1, U) * (U[i + p + 1] - u) / (U[i + p + 1] - U[i + p]);
+        let v1 = (u - U[i]) / (U[i + p] - U[i] +1) || 0;
+        let v2 = (U[i + p + 1] - u) / (U[i + p + 1] - U[i + p] +1) || 0;
+        return basis_function(u, i, p - 1, U) * v1 +
+            basis_function(u, i + 1, p - 1, U) * v2;
     }
 }
 
@@ -35,30 +37,30 @@ function draw_line(p, n, w, U, lines, controlPoints) {
     //var lines = 1000;
     let vertices = [];
     for (let i = 0; i <= lines; i++) {
-        let point = nurbs((i+1) / lines, p, n, w, U, controlPoints);
-        // point[0] = point[0] || 0;
-        // point[1] = point[1] || 0;
-        vertices.push(point[0]/2 || 0, point[1]/2 || 0, 0);
+        let point = nurbs((i + 1) / lines, p, n, w, U, controlPoints);
+        vertices.push(point[0]/2  , point[1]/2 , 0); // x/2, y/2, z=0
     }
     return vertices;
 }
 
 
-// -------Debug-------------------------------
-let P = [[0.0, 0.0], [1, 2], [3, 1]];
-let U = [0.0, 0.2, 0.4, 0.6, 0.8, 0.9, 1.0];
-let w = [1, 1, 1, 1, 1];
-let n = 2;
-let p = 3;
+// -------------------------Draw Circle-------------------------------
+let P = [[0, 0], [1, 0], [1 / 2, Math.sqrt(3) / 2],
+    [0, Math.sqrt(3)], [-1 / 2, Math.sqrt(3) / 2], [-1, 0],
+    [0, 0]];
+const U = [0, 0, 0, 1/3, 1/3, 2/3, 2/3, 1, 1, 1];
+let w = [1, 0.5, 1, 0.5, 1, 0.5, 1];
+let n = 6;
+let p = 2;
 let m = n + p + 1;
 
-const vertices = draw_line(p, n, w, U, 100, P);
-// console.log(vertices);
+let vertices = draw_line(p, n, w, U, 100, P);
+console.log(vertices);
 
 // output vertices
 // document.getElementById("output").innerHTML = vertices;
 
-/*-----------------------------div---------------------------------------
+/*-------------------------------------------------------------------
 Code Below referred from (Edited)
 https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#
 */
@@ -66,7 +68,7 @@ https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#
 
 // init
 const canvas = document.getElementById("glCanvas");
-const gl = canvas.getContext("webgl2");
+const gl = canvas.getContext("webgl");
 
 // let vertices = [
 //     -0.7, -1.1, 0,
@@ -120,14 +122,14 @@ gl.useProgram(shaderProgram);
 
 gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 const coord = gl.getAttribLocation(shaderProgram, "coordinates");
-gl.vertexAttribPointer(coord, 3, gl.FLOAT, true, 0, 0); // what?
+gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0); // what?
 gl.enableVertexAttribArray(coord);
 
 // Draw
-// gl.clearColor(0,1, 1, 1);
-// gl.enable(gl.DEPTH_TEST);
-// gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-gl.viewport(-100,-100,canvas.width, canvas.height);
-gl.drawArrays(gl.LINE_STRIP, 0, 99);
+gl.clearColor(0,1, 1, 0.5);
+gl.enable(gl.DEPTH_TEST);
+gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+gl.viewport(0, -100, canvas.width, canvas.height);
+gl.drawArrays(gl.LINE_LOOP, 0, 300);
 // gl.drawArrays()
 
