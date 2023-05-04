@@ -13,18 +13,22 @@
         When I was doing architecture design, I often used a 3D modeling software called Rhinoceros,
         which uses NURBS to make precise 3D models.
     </p>
-    <p id="output">The problem is, it doesn't a GUI, so it can't be changed in this page.
-    In order to draw something different, (e.g, add more control points, change weights, etc.)
-    you have to edit the source code, which is to some extent, not user-friendly. </p>
+
+    <canvas id="glCanvas" width="600" height="600"></canvas>
+    <script src="script.js"></script>
+    <p>As you can see, so far there are some problems. One problem is, it doesn't support editing, so you can't change the parameters here.
+        In order to draw something different, (e.g, change/add more control points, change weights, etc.)
+        you have to edit the source code, which is to some extent, not user-friendly. <br>
+        Another problem is that I am an amateur. I don't know how to draw 2 objects in one canvas using WebGL.
+        I might fix it in the next update.</p>
 
     <h4>TO-DO(maybe in the next assignment)</h4>
     <ul>
-        <li>Allow edit </li>
-        <li>Draw multiple objects in webGL</li>
+        <li>Allow editing</li>
+        <li>Draw multiple objects(axis, control points, etc.) using webGL</li>
     </ul>
-    <canvas id="glCanvas" width="400" height="400"></canvas>
-    <script src="script.js"></script>
     <h4>Reference:</h4>
-    <p>https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#</p>
+    <p>[1] https://www.tutorialspoint.com/webgl/webgl_modes_of_drawing.htm#</p>
+    <p>[2] https://pages.mtu.edu/~shene/PUBLICATIONS/2004/NURBS.pdf</p>
 </body>
 </html>
