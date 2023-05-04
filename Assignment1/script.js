@@ -7,15 +7,17 @@ function basis_function(u, i, p, U) {
         } else {
             return 0;
         }
-    } else {
-        let v1 = (u - U[i]) / (U[i + p] - U[i] -1);
-        let v2 = (U[i + p + 1] - u) / (U[i + p + 1] - U[i + p] -1);
-        return basis_function(u, i, p - 1, U) * v1 +
-            basis_function(u, i + 1, p - 1, U) * v2;
+    } else {    // can be optimized
+        let N1 = 0; let N2 = 0;
+        let B1 = basis_function(u, i, p - 1, U);
+        let B2 = basis_function(u, i + 1, p - 1, U);
+        if (B1 !== 0) {N1 = B1 * (u - U[i]) / (U[i + p] - U[i] );}
+        if (B2 !== 0) {N2 = B2 * (U[i + p + 1] - u) / (U[i + p + 1] - U[i + 1]);}
+        return N1 + N2;
     }
 }
 
-function R(u, i, p, n, w, U) {
+function rational_base_function(u, i, p, n, w, U) {
     let sum = 0;
     for (let j = 0; j <= n; j++) {
         sum += w[j] * basis_function(u, j, p, U);
@@ -26,9 +28,12 @@ function R(u, i, p, n, w, U) {
 
 function nurbs(u, p, n, w, U, controlPoints) {
     let vertices = [0, 0];
+    var R;
     for (let i = 0; i <= n; i++) {
-        vertices[0] += R(u, i, p, n, w, U) * controlPoints[i][0];
-        vertices[1] += R(u, i, p, n, w, U) * controlPoints[i][1];
+        R = rational_base_function(u, i, p, n, w, U);
+        // vertices[0] += R * controlPoints[i][0];
+        // vertices[1] += R * controlPoints[i][1];
+        vertices += R * controlPoints[i][];
     }
     return vertices;
 }
