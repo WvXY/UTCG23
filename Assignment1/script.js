@@ -31,9 +31,8 @@ function nurbs(u, p, n, w, U, controlPoints) {
     var R;
     for (let i = 0; i <= n; i++) {
         R = rational_base_function(u, i, p, n, w, U);
-        // vertices[0] += R * controlPoints[i][0];
-        // vertices[1] += R * controlPoints[i][1];
-        vertices += R * controlPoints[i][];
+        vertices[0] += R * controlPoints[i][0];
+        vertices[1] += R * controlPoints[i][1];
     }
     return vertices;
 }
